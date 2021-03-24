@@ -1,0 +1,7 @@
+.star:after{
+    content: "*";
+    color: red;
+}
+/* .card{
+    width: 50%;  
+} */
