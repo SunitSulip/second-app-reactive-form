@@ -4,12 +4,17 @@
       <h1>Employee Form</h1>
     </div>
     <div class="card-body">
-      <form action="" novalidate [formGroup]="employeeForm">
+      <form action="" novalidate [formGroup]="employeeForm" (ngSubmit)="onSubmit()" [hidden]="submitted">
         <div class="form-group">
           <div class="star">
             <label for="firstName">First Name</label>
           </div>
-          <input formControlName="firstName" type="text" id="firstName" class="form-control"> 
+          <input [class.is-invalid]="employeeForm.get('firstName').invalid && employeeForm.get('firstName').touched" formControlName="firstName" type="text" id="firstName" class="form-control">
+          <div *ngIf="employeeForm.get('firstName').invalid && employeeForm.get('firstName').touched">
+            <small *ngIf="employeeForm.get('firstName').errors?.minlength" class="text-danger">First Name should be 3 char atleast</small> 
+            <small *ngIf="employeeForm.get('firstName').errors?.required" class="text-danger">Please Fill the First Name</small> 
+          </div>
+         
         </div>
     
         <div class="form-group">
@@ -21,7 +26,16 @@
           <div class="star">
             <label for="lastName">Last Name</label>
           </div>
-          <input formControlName="lastName" type="text" id="lastName" class="form-control"> 
+          <input [class.is-invalid]="employeeForm.get('lastName').invalid && employeeForm.get('lastName').touched" formControlName="lastName" type="text" id="lastName" class="form-control">
+          <div *ngIf="employeeForm.get('lastName').invalid && employeeForm.get('lastName').touched">
+            <small *ngIf="employeeForm.get('lastName').errors?.minlength" class="text-danger">First Name should be 3 char atleast</small> 
+            <small *ngIf="employeeForm.get('lastName').errors?.required" class="text-danger">Please Fill the First Name</small> 
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profilePicture"> Profile Picture:-</label>
+          <input type="file" class="form-control">
         </div>
         
         <div class="form-group">
@@ -29,14 +43,15 @@
             <label for="gender">Gender</label>
           </div>
           <div class="form-check form-check-inline">
-            <input type="radio" name="gender" id="male" formControlName="gender"><label for="male">Male</label>
+            <input type="radio" name="gender" id="male" formControlName="gender" value="male"><label for="male">Male</label>
           </div>
           <div class="form-check form-check-inline">
-            <input type="radio" name="gender" id="female" formControlName="gender"><label for="female">Female</label>
+            <input type="radio" name="gender" id="female" formControlName="gender" value="female"><label for="female">Female</label>
           </div>
           <div class="form-check form-check-inline">
-            <input type="radio" name="gender" id="others" formControlName="gender"><label for="others">Others</label>
-          </div>          
+            <input type="radio" name="gender" id="others" formControlName="gender" value="others"><label for="others">Others</label>
+          </div>  
+          <small [class.d-none]="employeeForm.get('gender').valid ||employeeForm.get('gender').untouched" class="text-danger">Choose a gender</small>        
         </div>
     
         <div formGroupName="address">
@@ -45,6 +60,7 @@
               <label for="permanentAddress">Permanent Address</label>
             </div>
             <textarea formControlName="permanentAddress" name="permanentAddress" class="form-control" id="permanentAddress" cols="30" rows="5"></textarea>
+            <small [class.d-none]="employeeForm.get('address.permanentAddress').valid ||employeeForm.get('address.permanentAddress').untouched" class="text-danger">Please Fill the Last Name</small>
           </div>
           <div class="form-group">
             <div>
@@ -63,6 +79,7 @@
               <option value="mp">MP</option>
               <option value="delhi">Delhi</option>
             </select>
+            <small [class.d-none]="employeeForm.get('address.state').valid ||employeeForm.get('address.state').untouched" class="text-danger">Choose a State</small>
           
           </div>
           <div class="form-group">
@@ -73,6 +90,7 @@
               <option value="india">India</option>
               <option value="usa">USA</option>
             </select>
+            <small [class.d-none]="employeeForm.get('address.country').valid ||employeeForm.get('address.country').untouched" class="text-danger">Choose a country</small>
           </div>
         </div>
         <div class="form-group">
@@ -80,12 +98,18 @@
             <label for="mobile">Mobile Number</label>
           </div>
           <input formControlName="mobile" type="number" name="mobile" id="mobile" class="form-control">
+          <div *ngIf="employeeForm.get('mobile').invalid && employeeForm.get('mobile').touched">
+            <small *ngIf="employeeForm.get('mobile').errors?.pattern" class="text-danger">provide 10 digit number</small> 
+            <small *ngIf="employeeForm.get('mobile').errors?.required" class="text-danger">Please Fill the mobile number</small> 
+          </div>
         </div>
         <div class="form-group">
           <div class="star">
             <label for="email">Email Id</label>
           </div>
           <input formControlName="email" type="text" id="email" class="form-control"> 
+          <small [class.d-none]="employeeForm.get('email').valid ||employeeForm.get('email').untouched" class="text-danger">Please give a email</small>
+          <small class="text-danger" *ngIf="employeeForm.get('email').errors?.pattern">enter a correct email</small>
         </div>
     
         <div class="form-group">
@@ -93,23 +117,36 @@
             <label for="password">Password</label>
           </div>
           <input formControlName="password" type="password" id="password" class="form-control"> 
+          <small [class.d-none]="employeeForm.get('password').valid ||employeeForm.get('password').untouched" class="text-danger">Please provide a password</small>
         </div>
         <div class="form-group">
           <div class="star">
             <label for="confirmPassword">Confirm Password</label>
           </div>
-          <input formControlName="confirmPassword" type="password" id="confirmPassword" class="form-control"> 
+          <input [class.is-invalid]="employeeForm.errors?.misMatch" formControlName="confirmPassword" type="password" id="confirmPassword" class="form-control"> 
+          <small [class.d-none]="employeeForm.get('confirmPassword').valid ||employeeForm.get('confirmPassword').untouched" class="text-danger">Please give a Confirm Password</small>
+          <small *ngIf="employeeForm.errors?.misMatch" class="text-danger">Confirm Password not matching</small>
         </div>
     
         <div class="form-group">
           <div class="star">
             <label for="captcha">Captcha</label>
           </div>
-          <p>--------</p><button type="button" class="btn btn-secondary">Relode</button>
-          <input type="number" name="captcha" id="captcha" class="form-control">
+          <p>{{captchaA}}+{{captchaB}}</p><button type="button" class="btn btn-secondary" (click)="captchaReload()">Reload</button>
+          <input type="number" name="captcha" id="captcha" class="form-control" formControlName="captcha">
+         
+          <div *ngIf="employeeForm.get('captcha').valid || employeeForm.get('captcha').touched">
+            <small *ngIf="employeeForm.get('captcha').errors?.required" class="text-danger">Please enter the captcha </small>
+            <small class="text-danger" *ngIf="employeeForm.get('captcha').value != add && employeeForm.get('captcha').dirty">Incorrect Captcha</small>
+          </div>
         </div>
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary" [disabled]="employeeForm.invalid">Submit</button>
       </form>
+    </div>
+    <div [hidden]="!submitted">
+      <h2 class="text-success">Succesfully Submitted</h2>
+      <h4>Name:-</h4><strong>{{employeeForm.get('firstName').value}} {{employeeForm.get('middleName').value}} {{employeeForm.get('lastName').value}}</strong>
+      <h4>Email:-</h4><strong>{{employeeForm.get('email').value}}</strong>
     </div>
     <div class="card-footer">
       <p>@copyright---------------</p>
